@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+sourceSets {
+    test {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }
+}
+
+dependencies {
+    compile project(':juxy')
+}

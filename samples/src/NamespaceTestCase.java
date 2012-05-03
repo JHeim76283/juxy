@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
  */
 public class NamespaceTestCase extends JuxyTestCase {
   protected void setUp() throws Exception {
-    newContext("samples/xsl/namespace.xsl");
+    newContext("src/xsl/namespace.xsl");
   }
 
   public void testElementsConverted() throws Exception {

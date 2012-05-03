@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
  */
 public class ParametersTestCase extends JuxyTestCase {
   protected void setUp() throws Exception {
-    newContext("samples/xsl/parameters.xsl");
+    newContext("src/xsl/parameters.xsl");
   }
 
   public void testTemplateParameter_SimpleValue() throws Exception {

@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
 public class ListTestCase extends JuxyTestCase {
 
   protected void setUp() throws Exception {
-    newContext("samples/xsl/list.xsl");
+    newContext("src/xsl/list.xsl");
   }
 
   public void testEmptyList() throws Exception {

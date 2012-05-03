@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
 public class CustomResolverTestCase extends JuxyTestCase {
   public void testSimpleTransformation() throws Exception {
     CatalogManager cm = CatalogManager.getStaticManager();
-    cm.setCatalogFiles("samples/samples.catalog");
+    cm.setCatalogFiles("src/samples.catalog");
 
     newContext("CustomResolverTestCase", new CatalogResolver(cm));
     context().setDocument("<root/>");
