@@ -4,5 +4,5 @@ package org.tigris.juxy;
  * Contains current Juxy version.
  */
 public class Version {
-    public final static String VERSION = "0.8.1";
+    public final static String VERSION = "0.8.1-theess-1";
 }

@@ -1,0 +1,14 @@
+
+# /
+/build
+/depcache
+/docs
+/cvgreport
+/*.zip
+/coverage.*
+
+/.gradle
+/.settings
+/.classpath
+/.project
+/bin

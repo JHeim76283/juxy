@@ -1,0 +1,97 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+version '0.9.0-SNAPSHOT'
+group 'teetrinkers'
+
+sourceCompatibility = 1.4
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir 'tests'
+        }
+        resources {
+            srcDir 'tests'
+        }
+    }
+}
+
+configurations {
+	testRuntimeFirst
+}
+
+dependencies {
+    compile 'commons-logging:commons-logging:1.1.1'
+    compile 'jaxen:jaxen:1.1.1'
+    compile 'junit:junit:3.8.1'
+    compile 'xml-resolver:xml-resolver:1.2'
+    compile 'org.apache.ant:ant-testutil:1.8.3'
+
+    testRuntimeFirst files('tests/xml/resolver/resources.jar')
+
+    testRuntime files('tests/xml/resolver/resources2.jar')
+	testRuntime 'net.sf.saxon:saxon:8.7'
+	testRuntime 'net.sf.saxon:saxon-dom:8.7'            
+}
+
+sourceSets.test.runtimeClasspath = configurations.testRuntimeFirst + sourceSets.test.runtimeClasspath
+
+test {
+	systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.processor.TransformerFactoryImpl'
+	// systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
+}
+
+// Generate Version.java containing the project version.
+task generateVersionFile(type:Copy) {
+	from('src') {
+		include 'org/tigris/juxy/Version.tpl'
+		filter(ReplaceTokens, tokens:[version:project.version])
+		rename '(.*).tpl', '$1.java'
+	}
+	into('src')
+}
+compileJava.dependsOn generateVersionFile
+
+// Generate gradlew.
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.0-rc-3'
+}
+
+// Deploy to maven repo.
+if (hasProperty('uploadRepositoryUrl')) {
+	uploadArchives {
+	    repositories.mavenDeployer {
+	        repository(url: uploadRepositoryUrl) {
+	            authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
+	        }
+	        snapshotRepository(url: uploadSnapshotRepositoryUrl) {
+	            authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
+	        }
+	    }
+	}
+}
+
+// Also deploy source jar.
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+artifacts {
+    archives sourcesJar
+}
