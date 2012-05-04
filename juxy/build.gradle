@@ -56,37 +56,35 @@ sourceSets.test.runtimeClasspath = configurations.testRuntimeFirst + sourceSets.
 // -----
 
 task test(overwrite: true) {}
+test.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('test') && task.name != 'test' }
+}
 
 task testDefaultTransformer(type: Test) {
     description = "Runs tests using the default TransformerFactory."
 }
-test.dependsOn(testDefaultTransformer)
 
 task testApacheXalan(type: Test) {
     description = "Runs tests using Apache Xalan XSLT."
 	systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.processor.TransformerFactoryImpl'
 }
-test.dependsOn(testApacheXalan)
 
 /* There are test failures.
 task testJavaXSLTC(type: Test) {
     description = "Runs tests using JRE XSLTC."
     systemProperty 'javax.xml.transform.TransformerFactory', 'com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl'
 }
-test.dependsOn(testJavaXSLTC)
 */
 
 task testApacheXalanXSLTC(type: Test) {
     description = "Runs tests using Apache Xalan XSLTC."
     systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.xsltc.trax.TransformerFactoryImpl'
 }
-test.dependsOn(testApacheXalanXSLTC)
 
 task testSaxon(type: Test) {
     description = "Runs tests using Saxon."
     systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
 }
-test.dependsOn(testSaxon)
 
 task testOracleXDK(type: Test) {
     description = "Runs tests using Oracle XDK."
@@ -96,7 +94,6 @@ task testOracleXDK(type: Test) {
     systemProperty 'org.xml.sax.driver', 'oracle.xml.jaxp.JXSAXParser'
     classpath += configurations.testRuntimeOracleXDK
 }
-test.dependsOn(testOracleXDK)
 
 // Stuff
 // -----
