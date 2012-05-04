@@ -1,0 +1,14 @@
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+
+configurations {
+    all*.exclude group:'commons-logging'
+}
+
+dependencies {
+	groovy 'org.codehaus.groovy:groovy:1.8.5'
+    testCompile project(':juxy')
+    testCompile 'org.slf4j:slf4j-api:1.6.4'
+    testCompile 'org.slf4j:jcl-over-slf4j:1.6.4'
+    testCompile 'ch.qos.logback:logback-classic:1.0.2'
+}

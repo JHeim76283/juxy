@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.4
 
 sourceSets {
     test {
@@ -12,5 +15,5 @@ sourceSets {
 }
 
 dependencies {
-    compile project(':juxy')
+    testCompile project(':juxy')
 }

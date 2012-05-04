@@ -4,6 +4,8 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 
+sourceCompatibility = 1.4
+
 sourceSets {
     main {
         java {
@@ -30,7 +32,7 @@ configurations {
 dependencies {
     compile 'commons-logging:commons-logging:1.1.1'
     compile 'jaxen:jaxen:1.1.1'
-    compile 'junit:junit:3.8.1'
+    compile 'junit:junit:4.10'
     compile 'xml-resolver:xml-resolver:1.2'
     compile 'org.apache.ant:ant-testutil:1.8.3'
 

@@ -1,14 +1,13 @@
 
 # /
+.settings
+.classpath
+.project
 /build
-/depcache
-/docs
-/cvgreport
-/*.zip
-/coverage.*
-
 /.gradle
-/.settings
-/.classpath
-/.project
-/bin
+/juxy/bin
+/juxy/build
+/samples-groovy/bin
+/samples-groovy/build
+/samples/bin
+/samples/build
