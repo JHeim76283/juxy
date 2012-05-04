@@ -122,17 +122,18 @@ task wrapper(type: Wrapper) {
 // -----
 
 // Deploy to maven repo.
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: uploadRepositoryUrl) {
-            authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
-        }
-        snapshotRepository(url: uploadSnapshotRepositoryUrl) {
-            authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
+if (project.hasProperty('uploadRepositoryUrl')) {
+    uploadArchives {
+        repositories.mavenDeployer {
+            repository(url: uploadRepositoryUrl) {
+                authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
+            }
+            snapshotRepository(url: uploadSnapshotRepositoryUrl) {
+                authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
+            }
         }
     }
 }
-uploadArchives.onlyIf { project.hasProperty('uploadRepositoryUrl') }
 
 // Also deploy source jar.
 task sourcesJar(type: Jar, dependsOn:classes) {
