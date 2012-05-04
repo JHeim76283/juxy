@@ -27,6 +27,7 @@ sourceSets {
 
 configurations {
 	testRuntimeFirst
+    testRuntimeOracleXDK
 }
 
 dependencies {
@@ -40,15 +41,65 @@ dependencies {
 
     testRuntime files('tests/xml/resolver/resources2.jar')
 	testRuntime 'net.sf.saxon:saxon:8.7'
-	testRuntime 'net.sf.saxon:saxon-dom:8.7'            
+	testRuntime 'net.sf.saxon:saxon-dom:8.7'
+    testRuntime 'xalan:xalan:2.7.1'
+    testRuntime 'xom:xom:1.2.5'
+    testRuntime 'xerces:xercesImpl:2.10.0'
+
+    testRuntimeOracleXDK files('lib/xmlparserv2.jar')
 }
 
+// Some tests expect the resources.jar at the front of the classpath.
 sourceSets.test.runtimeClasspath = configurations.testRuntimeFirst + sourceSets.test.runtimeClasspath
 
-test {
-	systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.processor.TransformerFactoryImpl'
-	// systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
+// Tests
+// -----
+
+task test(overwrite: true) {}
+
+task testDefaultTransformer(type: Test) {
+    description = "Runs tests using the default TransformerFactory."
 }
+test.dependsOn(testDefaultTransformer)
+
+task testApacheXalan(type: Test) {
+    description = "Runs tests using Apache Xalan XSLT."
+	systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.processor.TransformerFactoryImpl'
+}
+test.dependsOn(testApacheXalan)
+
+/* There are test failures.
+task testJavaXSLTC(type: Test) {
+    description = "Runs tests using JRE XSLTC."
+    systemProperty 'javax.xml.transform.TransformerFactory', 'com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl'
+}
+test.dependsOn(testJavaXSLTC)
+*/
+
+task testApacheXalanXSLTC(type: Test) {
+    description = "Runs tests using Apache Xalan XSLTC."
+    systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.xsltc.trax.TransformerFactoryImpl'
+}
+test.dependsOn(testApacheXalanXSLTC)
+
+task testSaxon(type: Test) {
+    description = "Runs tests using Saxon."
+    systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
+}
+test.dependsOn(testSaxon)
+
+task testOracleXDK(type: Test) {
+    description = "Runs tests using Oracle XDK."
+    systemProperty 'javax.xml.transform.TransformerFactory', 'oracle.xml.jaxp.JXSAXTransformerFactory'
+    systemProperty 'javax.xml.parsers.DocumentBuilderFactory', 'oracle.xml.jaxp.JXDocumentBuilderFactory'
+    systemProperty 'javax.xml.parsers.SAXParserFactory', 'oracle.xml.jaxp.JXSAXParserFactory'
+    systemProperty 'org.xml.sax.driver', 'oracle.xml.jaxp.JXSAXParser'
+    classpath += configurations.testRuntimeOracleXDK
+}
+test.dependsOn(testOracleXDK)
+
+// Stuff
+// -----
 
 // Generate Version.java containing the project version.
 task generateVersionFile(type:Copy) {
@@ -66,6 +117,9 @@ compileJava.dependsOn generateVersionFile
 task wrapper(type: Wrapper) {
     gradleVersion = '1.0-rc-3'
 }
+
+// Maven
+// -----
 
 // Deploy to maven repo.
 uploadArchives {
