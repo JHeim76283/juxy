@@ -28,6 +28,8 @@ sourceSets {
 configurations {
 	testRuntimeFirst
     testRuntimeOracleXDK
+    testRuntimeSaxon8
+    testRuntimeSaxon9
 }
 
 dependencies {
@@ -40,12 +42,13 @@ dependencies {
     testRuntimeFirst files('tests/xml/resolver/resources.jar')
 
     testRuntime files('tests/xml/resolver/resources2.jar')
-	testRuntime 'net.sf.saxon:saxon:8.7'
-	testRuntime 'net.sf.saxon:saxon-dom:8.7'
     testRuntime 'xalan:xalan:2.7.1'
     testRuntime 'xom:xom:1.2.5'
     testRuntime 'xerces:xercesImpl:2.10.0'
 
+    testRuntimeSaxon8 'net.sf.saxon:saxon:8.7'
+    testRuntimeSaxon8 'net.sf.saxon:saxon-dom:8.7'
+    testRuntimeSaxon9 'net.sf.saxon:Saxon-HE:9.4'
     testRuntimeOracleXDK files('lib/xmlparserv2.jar')
 }
 
@@ -62,11 +65,13 @@ test.dependsOn {
 
 task testDefaultTransformer(type: Test) {
     description = "Runs tests using the default TransformerFactory."
+    excludes = ['**/UTestVerifier*']
 }
 
 task testApacheXalan(type: Test) {
     description = "Runs tests using Apache Xalan XSLT."
 	systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.processor.TransformerFactoryImpl'
+    excludes = ['**/UTestVerifier*']
 }
 
 /* There are test failures.
@@ -79,11 +84,22 @@ task testJavaXSLTC(type: Test) {
 task testApacheXalanXSLTC(type: Test) {
     description = "Runs tests using Apache Xalan XSLTC."
     systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.xsltc.trax.TransformerFactoryImpl'
+    excludes = ['**/UTestVerifier*']
 }
 
-task testSaxon(type: Test) {
+task testSaxon8(type: Test) {
     description = "Runs tests using Saxon."
     systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
+    classpath += configurations.testRuntimeSaxon8
+    excludes = ['**/UTestVerifier*']
+}
+
+task testSaxon9HE(type: Test) {
+    description = "Runs tests using Saxon 9 Home Edition."
+    systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
+    classpath += configurations.testRuntimeSaxon9
+    // The home edition does not support calling java methods from xslt.
+    excludes = ['**/UTestVerifier*', '**/UTestExternalFunctions.class', '**/UTestRunnerTracing*', '**/UTestURIResolver.class']
 }
 
 task testOracleXDK(type: Test) {
@@ -93,6 +109,12 @@ task testOracleXDK(type: Test) {
     systemProperty 'javax.xml.parsers.SAXParserFactory', 'oracle.xml.jaxp.JXSAXParserFactory'
     systemProperty 'org.xml.sax.driver', 'oracle.xml.jaxp.JXSAXParser'
     classpath += configurations.testRuntimeOracleXDK
+    excludes = ['**/UTestVerifier*']
+}
+
+task testTestVerifier(type: Test) {
+    includes = ['**/UTestVerifier*']
+    classpath += configurations.testRuntimeSaxon8
 }
 
 // Stuff
