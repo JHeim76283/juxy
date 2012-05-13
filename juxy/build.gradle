@@ -36,8 +36,6 @@ dependencies {
     compile 'commons-logging:commons-logging:1.1.1'
     compile 'jaxen:jaxen:1.1.1'
     compile 'junit:junit:4.10'
-    compile 'xml-resolver:xml-resolver:1.2'
-    compile 'org.apache.ant:ant-testutil:1.8.3'
 
     testRuntimeFirst files('tests/xml/resolver/resources.jar')
 
@@ -65,13 +63,11 @@ test.dependsOn {
 
 task testDefaultTransformer(type: Test) {
     description = "Runs tests using the default TransformerFactory."
-    excludes = ['**/UTestVerifier*']
 }
 
 task testApacheXalan(type: Test) {
     description = "Runs tests using Apache Xalan XSLT."
 	systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.processor.TransformerFactoryImpl'
-    excludes = ['**/UTestVerifier*']
 }
 
 /* There are test failures.
@@ -84,14 +80,12 @@ task testJavaXSLTC(type: Test) {
 task testApacheXalanXSLTC(type: Test) {
     description = "Runs tests using Apache Xalan XSLTC."
     systemProperty 'javax.xml.transform.TransformerFactory', 'org.apache.xalan.xsltc.trax.TransformerFactoryImpl'
-    excludes = ['**/UTestVerifier*']
 }
 
 task testSaxon8(type: Test) {
     description = "Runs tests using Saxon."
     systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
     classpath += configurations.testRuntimeSaxon8
-    excludes = ['**/UTestVerifier*']
 }
 
 task testSaxon9HE(type: Test) {
@@ -99,7 +93,7 @@ task testSaxon9HE(type: Test) {
     systemProperty 'javax.xml.transform.TransformerFactory', 'net.sf.saxon.TransformerFactoryImpl'
     classpath += configurations.testRuntimeSaxon9
     // The home edition does not support calling java methods from xslt.
-    excludes = ['**/UTestVerifier*', '**/UTestExternalFunctions.class', '**/UTestRunnerTracing*', '**/UTestURIResolver.class']
+    excludes = ['**/UTestExternalFunctions.class', '**/UTestRunnerTracing*', '**/UTestURIResolver.class']
 }
 
 task testOracleXDK(type: Test) {
@@ -109,13 +103,17 @@ task testOracleXDK(type: Test) {
     systemProperty 'javax.xml.parsers.SAXParserFactory', 'oracle.xml.jaxp.JXSAXParserFactory'
     systemProperty 'org.xml.sax.driver', 'oracle.xml.jaxp.JXSAXParser'
     classpath += configurations.testRuntimeOracleXDK
-    excludes = ['**/UTestVerifier*']
 }
 
-task testTestVerifier(type: Test) {
-    includes = ['**/UTestVerifier*']
-    classpath += configurations.testRuntimeSaxon8
+// Packaging
+// ---------
+
+jar {
+    manifest {
+        attributes("Implementation-Version": version)
+    }
 }
+
 
 // Stuff
 // -----

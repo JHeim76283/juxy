@@ -1,1 +1,1 @@
-include "juxy", "samples", "samples-groovy"
+include "juxy", "juxy_ant", "samples", "samples-groovy"

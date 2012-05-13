@@ -12,7 +12,7 @@ public class UTestVerifierTask extends BuildFileTest {
   }
 
   protected void setUp() throws Exception {
-    configureProject("tests/xml/verifier/build.xml");
+    configureProject("src/test/resources/build.xml");
   }
 
   public void testNoFilesFoundForVerification() {

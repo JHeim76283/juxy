@@ -41,7 +41,7 @@ public class UTestVerifierImpl extends TestCase {
     verifier.setURIResolver(new URIResolver() {
       public Source resolve(String href, String base) {
         if ("http://uri.com".equals(href))
-          return new StreamSource(new File("tests/xml/verifier/imported.xsl").toURI().toString());
+          return new StreamSource(new File("src/test/resources/imported.xsl").toURI().toString());
 
         return null;
       }
@@ -131,9 +131,9 @@ public class UTestVerifierImpl extends TestCase {
     assertTrue(verifier.verify(false));
 
     String[] infos = reporter.infos();
-    assertEquals("tests/xml/verifier/3.xsl ...", infos[infos.length - 1]);
-    assertEquals("tests/xml/verifier/2.xsl ...", infos[infos.length - 2]);
-    assertEquals("tests/xml/verifier/1.xsl ...", infos[infos.length - 3]);
+    assertEquals("src/test/resources/3.xsl ...", infos[infos.length - 1]);
+    assertEquals("src/test/resources/2.xsl ...", infos[infos.length - 2]);
+    assertEquals("src/test/resources/1.xsl ...", infos[infos.length - 3]);
   }
 
   private boolean containsMessage(String[] messages, String message) {
@@ -148,7 +148,7 @@ public class UTestVerifierImpl extends TestCase {
   private List files(String[] paths) {
     List files = new ArrayList();
     for (int i = 0; i < paths.length; i++) {
-      files.add(new File("tests/xml/verifier/", paths[i]));
+      files.add(new File("src/test/resources/", paths[i]));
     }
 
     return files;

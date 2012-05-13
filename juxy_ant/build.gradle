@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.4
+
+dependencies {
+    compile project(':juxy')
+    compile 'org.apache.ant:ant-testutil:1.8.3'
+    compile 'xml-resolver:xml-resolver:1.2'
+
+    testRuntime 'net.sf.saxon:saxon:8.7'
+    testRuntime 'net.sf.saxon:saxon-dom:8.7'
+    testRuntime 'net.sf.saxon:Saxon-HE:9.4'
+}
+
+jar {
+    manifest {
+        attributes("Implementation-Version": version)
+    }
+}

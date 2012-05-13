@@ -16,4 +16,5 @@ sourceSets {
 
 dependencies {
     testCompile project(':juxy')
+    testCompile 'xml-resolver:xml-resolver:1.2'
 }

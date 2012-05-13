@@ -5,12 +5,9 @@
 
   <path id="juxy.task.path">
     <pathelement path="${classes.dir}"/>
-    <fileset dir="${lib.dir}">
-      <include name="*.jar"/>
-    </fileset>
   </path>
 
-  <fileset dir="tests/xml/verifier" id="valid-xsl">
+  <fileset dir="src/test/resources" id="valid-xsl">
     <include name="root.xsl"/>
   </fileset>
 
@@ -41,18 +38,18 @@
 -->
 
   <target name="successful-verification">
-    <xsltverifier dir="tests/xml/verifier" includes="root.xsl"/>
+    <xsltverifier dir="src/test/resources" includes="root.xsl"/>
     <xsltverifier>
       <fileset refid="valid-xsl"/>
     </xsltverifier>
   </target>
 
   <target name="failonerror">
-    <xsltverifier dir="tests/xml/verifier" includes="not-well-formed.xsl, root.xsl" failonerror="true"/>
+    <xsltverifier dir="src/test/resources" includes="not-well-formed.xsl, root.xsl" failonerror="true"/>
   </target>
 
   <target name="no-failonerror">
-    <xsltverifier dir="tests/xml/verifier" includes="not-well-formed.xsl, root.xsl" failonerror="false"/>
+    <xsltverifier dir="src/test/resources" includes="not-well-formed.xsl, root.xsl" failonerror="false"/>
   </target>
 
   <target name="verification-factorywithoutname">
@@ -93,8 +90,8 @@
   </target>
 
   <target name="verification-validcatalog">
-    <xsltverifier dir="tests/xml/verifier" includes="using-catalog.xsl">
-      <catalog catalogfiles="tests/xml/verifier/catalog1.xml,tests/xml/verifier/catalog2.xml"/>
+    <xsltverifier dir="src/test/resources" includes="using-catalog.xsl">
+      <catalog catalogfiles="src/test/resources/catalog1.xml,src/test/resources/catalog2.xml"/>
     </xsltverifier>
   </target>
 
