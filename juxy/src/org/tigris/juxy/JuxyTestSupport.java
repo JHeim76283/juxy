@@ -6,9 +6,6 @@ import javax.xml.transform.URIResolver;
 
 import junit.framework.AssertionFailedError;
 
-import org.tigris.juxy.Runner;
-import org.tigris.juxy.RunnerContext;
-import org.tigris.juxy.RunnerFactory;
 import org.tigris.juxy.util.ArgumentAssert;
 import org.tigris.juxy.util.DOMUtil;
 import org.tigris.juxy.util.DocumentsAssertionError;
@@ -156,6 +153,15 @@ public class JuxyTestSupport {
 		} catch (DocumentsAssertionError error) {
 			throw new AssertionFailedError(error.getMessage());
 		}
+	}
+
+	/**
+	 * Converts the node to a string and asserts that the result is equal to the expected result.
+	 * @param expected Expected result.
+	 * @param actual Node to compare.
+	 */
+	public void assertStringEquals(String expected, org.w3c.dom.Node actual) throws Exception {
+		xpathAssert(".", expected).eval(actual);
 	}
 
 	/**
