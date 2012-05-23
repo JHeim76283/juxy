@@ -1,0 +1,116 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+if(gradle.startParameter.taskNames.contains("uploadArchives")) {
+    signing {
+        sign configurations.archives
+    }
+} else {
+    task signArchives {
+    }
+}
+
+ext.pom = pom {
+    project {
+        packaging 'jar'
+        description 'Juxy is a library for unit testing XSLT stylesheets from Java using JUnit.'
+        url 'https://github.com/teetrinkers/juxy'
+
+        scm {
+           url 'scm:git@github.com:teetrinkers/juxy.git'
+           connection 'scm:git@github.com:teetrinkers/juxy.git'
+           developerConnection 'scm:git@github.com:teetrinkers/juxy.git'
+        }
+
+        licenses {
+           license {
+               name 'The Apache Software License, Version 2.0'
+               url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+               distribution 'repo'
+           }
+        }
+
+        developers {
+           developer {
+               id 'pavelsher'
+               name 'Pavel Sher'
+           }
+           developer {
+               id 'menteith'
+               name 'Tony Graham'
+           }
+           developer {
+               id 'sweetcharade'
+               name 'Jaebin Lee'
+           }
+           developer {
+               id 'teetrinkers'
+               name 'Jens Theess'
+           }
+        }
+    }
+}
+/*
+//mess with the generated pom to set the 'packaging' tag
+project.pom.withXml { XmlProvider xmlProvider ->
+   def xml = xmlProvider.asString()
+   def pomXml = new XmlParser().parse(new ByteArrayInputStream(xml.toString().bytes))
+
+   pomXml.version[0] + { packaging('jar') }
+
+   def newXml = new StringWriter()
+   def printer = new XmlNodePrinter(new PrintWriter(newXml))
+   printer.preserveWhitespace = true
+   printer.print(pomXml)
+   xml.setLength(0)
+   xml.append(newXml.toString())
+}
+*/
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task generatePom {
+    ext.pomFile = new File(temporaryDir, 'pom.xml')
+    doLast {
+        def localDeployer = install.repositories.mavenInstaller
+
+        configure(localDeployer) {
+            pom.scopeMappings.mappings.clear()
+            pom.scopeMappings.addMapping(300, configurations.publishCompile, Conf2ScopeMappingContainer.COMPILE)
+            pom.groupId = project.group
+            pom.artifactId = archivesBaseName
+            pom.version = version
+            pom.packaging = 'jar'
+            pom.writeTo(pomFile)
+        }
+
+    }
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives new org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact(archivesBaseName, 'pom', 'pom', null, new Date(), generatePom.pomFile, generatePom)
+}
+
+configure(install.repositories.mavenInstaller) {
+    pom = project.pom
+}
+
+// Deploy to maven repo.
+if (project.hasProperty('sonatypeUsername')) {
+    uploadArchives {
+        dependsOn generatePom
+        uploadDescriptor = false
+        repositories.mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+        }
+    }
+}

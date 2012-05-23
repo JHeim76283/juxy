@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
+apply from: "$rootDir/gradle/publish.gradle"
 
 sourceCompatibility = 1.4
 
@@ -26,16 +26,25 @@ sourceSets {
 }
 
 configurations {
-	testRuntimeFirst
+    // Only dependencies of scope publishCompile are exported to maven.
+    publishCompile
+    compile {
+        extendsFrom publishCompile
+    }
+
+    testRuntimeFirst
     testRuntimeOracleXDK
     testRuntimeSaxon8
     testRuntimeSaxon9
 }
 
 dependencies {
-    compile 'commons-logging:commons-logging:1.1.1'
+    publishCompile 'commons-logging:commons-logging:1.1.1'
+    publishCompile 'junit:junit:4.10'
+    
     compile 'jaxen:jaxen:1.1.1'
-    compile 'junit:junit:4.10'
+    compile 'xml-resolver:xml-resolver:1.2'
+    compile 'org.apache.ant:ant-testutil:1.8.3'
 
     testRuntimeFirst files('tests/xml/resolver/resources.jar')
 
@@ -135,28 +144,3 @@ task wrapper(type: Wrapper) {
     gradleVersion = '1.0-rc-3'
 }
 
-// Maven
-// -----
-
-// Deploy to maven repo.
-if (project.hasProperty('uploadRepositoryUrl')) {
-    uploadArchives {
-        repositories.mavenDeployer {
-            repository(url: uploadRepositoryUrl) {
-                authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
-            }
-            snapshotRepository(url: uploadSnapshotRepositoryUrl) {
-                authentication(userName: uploadRepositoryUsername, password: uploadRepositoryPassword)
-            }
-        }
-    }
-}
-
-// Also deploy source jar.
-task sourcesJar(type: Jar, dependsOn:classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-artifacts {
-    archives sourcesJar
-}
