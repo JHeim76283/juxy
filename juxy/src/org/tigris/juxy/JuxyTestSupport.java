@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Methods for writing JUnit tests for XSL templates.
+ * Methods for writing JUnit 4 tests for XSL templates.
  */
 public class JuxyTestSupport {
 	private Runner runner;

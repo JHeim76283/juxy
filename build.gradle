@@ -1,12 +1,13 @@
 allprojects {
-    version '0.9.0-SNAPSHOT'
-    group 'de.theess'
+    version '0.9.0'
+    group 'de.theess.juxy'
 
     repositories {
         mavenCentral()
     }
 }
 
-def publishedProjects() {
-    [project(':juxy')]
+// Generate gradlew.
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.0'
 }

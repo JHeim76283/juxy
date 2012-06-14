@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 import javax.xml.transform.URIResolver;
 
 /**
- * Base class for JUnit test cases.
+ * Base class for JUnit 3 test cases.
  *
  * @author Pavel Sher
  * @noinspection JavaDoc
