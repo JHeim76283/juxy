@@ -70,6 +70,6 @@ public class TransformationTest extends JuxyTestSupport {
 
 		def result = callTemplate("tolower")
 
-		xpathAssert(".", "my book").eval(result)
+		assertStringEquals("my book", result)
 	}
 }
